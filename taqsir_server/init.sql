@@ -1,0 +1,10 @@
+CREATE ROLE taqsir WITH LOGIN PASSWORD 'tq';
+CREATE DATABASE taqsirdb;
+GRANT ALL PRIVILEGES ON DATABASE taqsirdb TO taqsir;
+GRANT ALL ON SCHEMA public TO taqsir;
+CREATE TABLE urls (
+    id SERIAL PRIMARY KEY,
+    original_url VARCHAR(1024) NOT NULL,
+    shortened_url VARCHAR(512) NOT NULL
+);
+
