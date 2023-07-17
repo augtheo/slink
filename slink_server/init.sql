@@ -1,0 +1,10 @@
+CREATE ROLE slink WITH LOGIN PASSWORD 'tq';
+CREATE DATABASE slinkdb;
+GRANT ALL PRIVILEGES ON DATABASE slinkdb TO slink;
+GRANT ALL ON SCHEMA public TO slink;
+CREATE TABLE urls (
+    id SERIAL PRIMARY KEY,
+    original_url VARCHAR(1024) NOT NULL,
+    shortened_url VARCHAR(512) NOT NULL
+);
+
