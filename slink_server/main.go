@@ -7,20 +7,21 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
-	_ "github.com/lib/pq"
 	"log"
 	"net"
 
-	pb "github.com/augtheo/taqsir/taqsir"
+	_ "github.com/lib/pq"
+
+	pb "github.com/augtheo/slink/slink"
 	"google.golang.org/grpc"
 )
 
 const (
 	HOST     = "localhost"
 	PORT     = 5432
-	USER     = "taqsir"
+	USER     = "slink"
 	PASSWORD = "tq"
-	DB_NAME  = "taqsirdb"
+	DB_NAME  = "slinkdb"
 
 	K                 = 6
 	GRPC_DEFAULT_PORT = 50051
@@ -159,7 +160,7 @@ func (s *server) Expand(ctx context.Context, in *pb.ExpandRequest) (*pb.ExpandRe
 func main() {
 	flag.Parse()
 	db := init_db()
-  defer db.Close()
+	defer db.Close()
 
 	urlRepo = &UrlRepository{
 		db: db,

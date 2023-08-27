@@ -1,4 +1,4 @@
-module github.com/augtheo/taqsir
+module github.com/augtheo/slink
 
 go 1.20
 

@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-option go_package = "github.com/augtheo/taqsir";
-package taqsir;
+option go_package = "github.com/augtheo/slink";
+package slink;
 
 enum StatusCode {
   SUCCESS = 0;
