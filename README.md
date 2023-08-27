@@ -1,4 +1,4 @@
-# taqsir
+# slink
 
 An url shortening microservice. Uses a simple md5 hash and persists using a postgres db.
 
@@ -10,15 +10,15 @@ Compile the .proto definition with:
 
 protoc --go_out=. --go_opt=paths=source_relative \
     --go-grpc_out=. --go-grpc_opt=paths=source_relative \
-    taqsir/taqsir.proto
+    slink/slink.proto
 ```
 
-Create an `urls` table following the statements in [init.sql](./taqsir_server/init.sql)
+Create an `urls` table following the statements in [init.sql](./slink_server/init.sql)
 
 # run
 
 ```bash
-go run taqsir_server/main.go
+go run slink_server/main.go
 ```
 
 # test
@@ -26,11 +26,11 @@ go run taqsir_server/main.go
 Use a gRPC client such as [evans](https://github.com/ktr0731/evans) to test locally
 
 ```bash
-evans --port 50051 --proto taqsir/taqsir.proto
+evans --port 50051 --proto slink/slink.proto
 ```
 
 ```bash
-taqsir.UrlShortener@127.0.0.1:50051> call Shorten
+slink.UrlShortener@127.0.0.1:50051> call Shorten
 original_url (TYPE_STRING) => https://www.wikipedia.org
 {
   "shortenedUrl": "856f08"
