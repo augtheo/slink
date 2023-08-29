@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -26,7 +27,7 @@ func init() {
     original_url VARCHAR(1024) NOT NULL,
     shortened_url VARCHAR(512) NOT NULL)`,
 	); err != nil {
-		fmt.Println("Error creating table ", psqlInfo, err)
+		log.Fatal("Error creating table ", psqlInfo, err)
 	}
 }
 
