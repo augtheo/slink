@@ -35,7 +35,6 @@ func initGrpcServer() {
 	}
 	s := grpc.NewServer()
 	pb.RegisterUrlShortenerServer(s, &server{})
-	fmt.Printf("server listening at %v", lis.Addr())
 	log.Printf("server listening at %v", lis.Addr())
 
 	if err := s.Serve(lis); err != nil {
