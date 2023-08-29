@@ -1,6 +1,6 @@
 package main
 
 func main() {
-  initHttpServer()
+	go initHttpServer()
 	initGrpcServer()
 }

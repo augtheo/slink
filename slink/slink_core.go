@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
+	"log"
 
 	"github.com/augtheo/slink/repository"
 )
@@ -31,7 +31,7 @@ func getShortHash(original_url string) string {
 func getShortenedUrl(original_url string) string {
 	url, err := repository.FindByOriginalUrl(original_url)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	if url != nil {
 		return url.ShortenedUrl
@@ -40,7 +40,7 @@ func getShortenedUrl(original_url string) string {
 	shortened_url := getShortHash(original_url)
 	err = repository.Create(shortened_url, original_url)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	return shortened_url
 }
@@ -48,7 +48,7 @@ func getShortenedUrl(original_url string) string {
 func getExpandedUrl(shortened_url string) string {
 	url, err := repository.FindByShortenedUrl(shortened_url)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
 	if url == nil {
