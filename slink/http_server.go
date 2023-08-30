@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -8,7 +9,8 @@ import (
 )
 
 const (
-	HTTP_PORT = "8060"
+	SERVER_BASE_URL = "localhost"
+	HTTP_PORT       = "8060"
 )
 
 func initHttpServer() {
@@ -23,14 +25,14 @@ func initHttpServer() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-
+	e.Use(middleware.CORS())
 	e.POST("/shorten", func(c echo.Context) error {
 		slinkyRequest := new(SlinkRequest)
 		if err := c.Bind(slinkyRequest); err != nil {
 			return err
 		}
 		slinkyResponse := new(SlinkResponse)
-		slinkyResponse.Url = getShortenedUrl(slinkyRequest.Url)
+		slinkyResponse.Url = fmt.Sprintf("%v:%v/go/%v", SERVER_BASE_URL, HTTP_PORT, getShortenedUrl(slinkyRequest.Url))
 
 		return c.JSON(http.StatusCreated, slinkyResponse)
 
@@ -47,5 +49,11 @@ func initHttpServer() {
 		return c.JSON(http.StatusCreated, slinkyResponse)
 
 	})
+
+	e.GET("/go/:url", func(c echo.Context) error {
+		url := c.Param("url")
+		return c.Redirect(http.StatusPermanentRedirect, getExpandedUrl((url)))
+	})
+
 	e.Logger.Fatal(e.Start(":" + HTTP_PORT))
 }
