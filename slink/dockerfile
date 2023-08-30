@@ -6,6 +6,7 @@ RUN go mod download
 COPY *.go ./
 COPY proto ./proto
 COPY repository ./repository
+COPY *.html ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /slink
 
@@ -19,6 +20,6 @@ RUN go test -v ./...
 FROM gcr.io/distroless/base-debian11 AS build-release-stage
 WORKDIR /
 COPY --from=build-stage /slink /slink
-EXPOSE 8080
+EXPOSE 8060
 USER nonroot:nonroot
 ENTRYPOINT ["/slink"]
