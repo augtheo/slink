@@ -7,11 +7,11 @@ The compose file defines an application with a go service and a postgres db. To 
 # build
 
 ```bash
-docker compose build
+export $(cat .env.dev | xargs) && docker-compose build
 ```
 
 # run
 
 ```bash
-docker compose up -d
+export $(cat .env.dev | xargs) && docker-compose up -d
 ```

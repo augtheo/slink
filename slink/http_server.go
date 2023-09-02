@@ -3,18 +3,18 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
-const (
-	SERVER_BASE_URL = "localhost"
-	HTTP_PORT       = "8060"
-)
-
 func initHttpServer() {
 
+	var (
+		SERVER_BASE_URL = os.Getenv("SERVER_BASE_URL")
+		SERVER_PORT     = os.Getenv("SERVER_PORT")
+	)
 	type SlinkRequest struct {
 		Url string `json:"url"`
 	}
@@ -32,7 +32,7 @@ func initHttpServer() {
 			return err
 		}
 		slinkyResponse := new(SlinkResponse)
-		slinkyResponse.Url = fmt.Sprintf("%v:%v/go/%v", SERVER_BASE_URL, HTTP_PORT, getShortenedUrl(slinkyRequest.Url))
+		slinkyResponse.Url = fmt.Sprintf("%v:%v/go/%v", SERVER_BASE_URL, SERVER_PORT, getShortenedUrl(slinkyRequest.Url))
 
 		return c.JSON(http.StatusCreated, slinkyResponse)
 
@@ -55,5 +55,5 @@ func initHttpServer() {
 		return c.Redirect(http.StatusPermanentRedirect, getExpandedUrl((url)))
 	})
 
-	e.Logger.Fatal(e.Start(":" + HTTP_PORT))
+	e.Logger.Fatal(e.Start(":" + SERVER_PORT))
 }
