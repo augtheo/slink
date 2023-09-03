@@ -32,7 +32,7 @@ func initHttpServer() {
 			return err
 		}
 		slinkyResponse := new(SlinkResponse)
-		slinkyResponse.Url = fmt.Sprintf("%v:%v/go/%v", SERVER_BASE_URL, SERVER_PORT, getShortenedUrl(slinkyRequest.Url))
+		slinkyResponse.Url = fmt.Sprintf("%v/go/%v", SERVER_BASE_URL, getShortenedUrl(slinkyRequest.Url))
 
 		return c.JSON(http.StatusCreated, slinkyResponse)
 
