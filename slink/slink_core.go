@@ -9,8 +9,11 @@ import (
 )
 
 const (
-	K = 6
+	K              = 6
+	CACHE_CAPACITY = 1000
 )
+
+var cache = CreateLRUCache(CACHE_CAPACITY)
 
 func getShortHash(original_url string) string {
 	md5Sum := md5.Sum([]byte(original_url))
@@ -39,6 +42,7 @@ func getShortenedUrl(original_url string) string {
 
 	shortened_url := getShortHash(original_url)
 	err = repository.Create(shortened_url, original_url)
+	go cache.Put(shortened_url, original_url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,6 +50,10 @@ func getShortenedUrl(original_url string) string {
 }
 
 func getExpandedUrl(shortened_url string) string {
+	original_url, err := cache.Get(shortened_url)
+	if err == nil {
+		return original_url
+	}
 	url, err := repository.FindByShortenedUrl(shortened_url)
 	if err != nil {
 		log.Fatal(err)
