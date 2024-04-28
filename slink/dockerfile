@@ -4,8 +4,6 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY *.go ./
-COPY proto ./proto
-# TODO: Compile protobuf classes
 COPY repository ./repository
 COPY *.html ./
 

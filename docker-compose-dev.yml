@@ -1,0 +1,11 @@
+services:
+  backend:
+    environment:
+      - SLINK_URL=localhost:8060
+  slink-web:
+    build:
+      target: dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ./slink-web/src:/app/src
