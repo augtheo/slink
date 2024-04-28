@@ -12,7 +12,7 @@ import (
 func initHttpServer() {
 
 	var (
-		SERVER_BASE_URL = os.Getenv("SERVER_BASE_URL")
+		SLINK_URL = os.Getenv("SLINK_URL")
 		SERVER_PORT     = os.Getenv("SERVER_PORT")
 	)
 	type SlinkRequest struct {
@@ -32,7 +32,7 @@ func initHttpServer() {
 			return err
 		}
 		slinkyResponse := new(SlinkResponse)
-		slinkyResponse.Url = fmt.Sprintf("%v/go/%v", SERVER_BASE_URL, getShortenedUrl(slinkyRequest.Url))
+		slinkyResponse.Url = fmt.Sprintf("%v/go/%v", SLINK_URL, getShortenedUrl(slinkyRequest.Url))
 
 		return c.JSON(http.StatusCreated, slinkyResponse)
 
