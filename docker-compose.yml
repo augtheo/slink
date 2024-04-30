@@ -37,6 +37,8 @@ services:
       dockerfile: slink-web/dockerfile
     volumes:
       - /project/node_modules
+    ports:
+      - 5000:3000
     depends_on:
       - backend
 volumes:

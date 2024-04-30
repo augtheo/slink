@@ -17,6 +17,7 @@ func initHttpServer() {
 	)
 	type SlinkRequest struct {
 		Url string `json:"url"`
+    ExpiryDate string `json:"expiry_date"`
 	}
 
 	type SlinkResponse struct {
@@ -32,7 +33,7 @@ func initHttpServer() {
 			return err
 		}
 		slinkyResponse := new(SlinkResponse)
-		slinkyResponse.Url = fmt.Sprintf("%v/go/%v", SLINK_URL, getShortenedUrl(slinkyRequest.Url))
+		slinkyResponse.Url = fmt.Sprintf("%v/go/%v", SLINK_URL, getShortenedUrl(slinkyRequest.Url, slinkyRequest.ExpiryDate))
 
 		return c.JSON(http.StatusCreated, slinkyResponse)
 
