@@ -32,18 +32,6 @@ type Url struct {
 	ShortenedUrl string
 }
 
-func FindByOriginalUrl(originalUrl string) (*Url, error) {
-	var u Url
-	query := `SELECT shortened_url FROM urls WHERE original_url=$1;`
-	if err := db.QueryRow(query, originalUrl).Scan(&u.ShortenedUrl); err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
-		return nil, err
-	}
-	return &u, nil
-}
-
 func FindByShortenedUrl(shortenedUrl string) (*Url, error) {
 	var u Url
 	query := `SELECT original_url FROM urls WHERE shortened_url=$1 AND expiry_date > NOW();`

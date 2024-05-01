@@ -15,8 +15,8 @@ const (
 
 var cache = CreateLRUCache(CACHE_CAPACITY)
 
-func getShortHash(original_url string) string {
-	md5Sum := md5.Sum([]byte(original_url))
+func getShortHash(original_url string, expiry_date string) string {
+	md5Sum := md5.Sum([]byte(original_url + expiry_date))
 	md5Hash := hex.EncodeToString(md5Sum[:])
 
 	var shortened_hash string
@@ -32,16 +32,9 @@ func getShortHash(original_url string) string {
 }
 
 func getShortenedUrl(original_url string, expiry_date string) string {
-	url, err := repository.FindByOriginalUrl(original_url)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if url != nil {
-		return url.ShortenedUrl
-	}
 
-	shortened_url := getShortHash(original_url) //TODO: Include expiry_date in the hash calculation and cache
-	err = repository.Create(shortened_url, original_url, expiry_date)
+	shortened_url := getShortHash(original_url, expiry_date)
+	err := repository.Create(shortened_url, original_url, expiry_date)
 	go cache.Put(shortened_url, original_url)
 	if err != nil {
 		log.Fatal(err)
