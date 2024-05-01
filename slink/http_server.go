@@ -12,12 +12,12 @@ import (
 func initHttpServer() {
 
 	var (
-		SLINK_URL = os.Getenv("SLINK_URL")
-		SERVER_PORT     = os.Getenv("SERVER_PORT")
+		SLINK_URL   = os.Getenv("SLINK_URL")
+		SERVER_PORT = os.Getenv("SERVER_PORT")
 	)
 	type SlinkRequest struct {
-		Url string `json:"url"`
-    ExpiryDate string `json:"expiry_date"`
+		Url        string `json:"url"`
+		ExpiryDate string `json:"expiry_date"`
 	}
 
 	type SlinkResponse struct {
@@ -53,7 +53,12 @@ func initHttpServer() {
 
 	e.GET("/go/:url", func(c echo.Context) error {
 		url := c.Param("url")
-		return c.Redirect(http.StatusPermanentRedirect, getExpandedUrl((url)))
+    original_url := getExpandedUrl(url)
+    if original_url == "" {
+      return c.Redirect(http.StatusPermanentRedirect, fmt.Sprintf("%v/error", SLINK_URL))
+    } else {
+      return c.Redirect(http.StatusPermanentRedirect, original_url)
+    }
 	})
 
 	e.Logger.Fatal(e.Start(":" + SERVER_PORT))
