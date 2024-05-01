@@ -22,11 +22,11 @@ docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d
 
 - [x] Restructure repository functions to separate modules
 - [x] Cache recently resolved urls
+- [x] Give an option to set an expiry time for shortened urls.
 
 ## wip
 
 - [ ] Use base 58 encoded URLs
-- [ ] Give an option to set an expiry time for shortened urls.
 
 ## hmm
 

@@ -39,18 +39,7 @@ func initHttpServer() {
 
 	})
 
-	e.POST("/expand", func(c echo.Context) error {
-		slinkyRequest := new(SlinkRequest)
-		if err := c.Bind(slinkyRequest); err != nil {
-			return err
-		}
-		slinkyResponse := new(SlinkResponse)
-		slinkyResponse.Url = getExpandedUrl(slinkyRequest.Url)
-
-		return c.JSON(http.StatusCreated, slinkyResponse)
-
-	})
-
+  //TODO:  Use /:url
 	e.GET("/go/:url", func(c echo.Context) error {
 		url := c.Param("url")
     original_url := getExpandedUrl(url)
