@@ -27,6 +27,8 @@ docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d
 ## wip
 
 - [ ] Use base 58 encoded URLs
+- [ ] Remove expired urls from cache
+- [ ] Add db migrations
 
 ## hmm
 
