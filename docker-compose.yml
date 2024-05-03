@@ -41,6 +41,26 @@ services:
       - 5000:3000
     depends_on:
       - backend
+  migrator:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+    command:
+      [
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}?sslmode=disable",
+        "up",
+      ]
+    depends_on:
+      - db
+    networks:
+      - backend-db
 volumes:
   db-data:
 networks:

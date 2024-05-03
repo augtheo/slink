@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -17,14 +16,6 @@ func init() {
 		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_NAME"))
 	db, err = sql.Open("postgres", psqlInfo)
 
-	if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS urls (
-    id SERIAL PRIMARY KEY,
-    original_url VARCHAR(1024) NOT NULL,
-    shortened_url VARCHAR(512) NOT NULL,
-    expiry_date TIMESTAMP WITH TIME ZONE NOT NULL)`,
-	); err != nil {
-		log.Fatal("Error creating table ", psqlInfo, err)
-	}
 }
 
 type Url struct {
