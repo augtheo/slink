@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS urls (
+  id SERIAL PRIMARY KEY, 
+  original_url VARCHAR(1024) NOT NULL, 
+  shortened_url VARCHAR(512) NOT NULL, 
+  expiry_date TIMESTAMP WITH TIME ZONE NOT NULL
+);
