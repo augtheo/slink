@@ -29,8 +29,9 @@ export default function Component() {
 
   const { toast } = useToast();
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value); // Update the state with the new input value
+    setInputValue(event.target.value);
   };
+
   function onInputFocusHandler() {
     setShortenedURL("");
     setIsVisible(false);
@@ -87,49 +88,6 @@ export default function Component() {
           onChange={handleInputChange}
           value={inputValue}
         />
-        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-          <PopoverTrigger asChild>
-            <Button className="bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
-              <CalendarDaysIcon className="h-5 w-5" />
-              <span className="sr-only">Set expiry date</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-auto p-0">
-            <Calendar
-              mode="single"
-              selected={expiryDate}
-              onSelect={(val) => {
-                setExpiryDate(val);
-                setIsCalendarOpen(false);
-              }}
-            />
-          </PopoverContent>
-        </Popover>
-        <Button
-          className="bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500"
-          onClick={shortenURLHandler}
-        >
-          Shorten
-        </Button>
-      </div>
-      <div
-        className={`flex items-center justify-between space-x-2 text-gray-400 ${
-          isVisible ? "" : "hidden"
-        }`}
-      >
-        <div className="flex items-center space-x-2">
-          <LinkIcon className="h-5 w-5" />
-          <p className="truncate">{shortenedURL}</p>
-        </div>
-        <Button
-          className="text-gray-400 hover:bg-gray-600 hover:text-gray-50 "
-          size="icon"
-          variant="ghost"
-          onClick={copyHandler}
-        >
-          <CopyIcon className="h-5 w-5" />
-          <span className="sr-only">Copy short URL</span>
-        </Button>
       </div>
       <div
         className={`flex items-center justify-between space-x-2 text-gray-400 ${
@@ -153,6 +111,51 @@ export default function Component() {
             </span>
           </p>
         </div>
+        <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+          <PopoverTrigger asChild>
+            <Button className="bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
+              <CalendarDaysIcon className="h-5 w-5" />
+              <span className="sr-only">Set expiry date</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="start" className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={expiryDate}
+              onSelect={(val) => {
+                setExpiryDate(val);
+                setIsCalendarOpen(false);
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+      <div
+        className={`flex items-center justify-between space-x-2 text-gray-400 ${
+          isVisible ? "" : "hidden"
+        }`}
+      >
+        <div className="flex items-center space-x-2">
+          <LinkIcon className="h-5 w-5" />
+          <p className="truncate">{shortenedURL}</p>
+        </div>
+        <Button
+          className="text-gray-400 hover:bg-gray-600 hover:text-gray-50 "
+          size="icon"
+          variant="ghost"
+          onClick={copyHandler}
+        >
+          <CopyIcon className="h-5 w-5" />
+          <span className="sr-only">Copy short URL</span>
+        </Button>
+      </div>
+      <div className="flex justify-stretch space-x-2 text-gray-400">
+        <Button
+          className="flex-1 bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500"
+          onClick={shortenURLHandler}
+        >
+          Shorten
+        </Button>
       </div>
     </div>
   );
