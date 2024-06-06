@@ -23,11 +23,17 @@
 
           nodePackages.typescript
           nodePackages.typescript-language-server
+          yaml-language-server
+          
+
+          tailwindcss-language-server
 
           prettierd
+          vscode-langservers-extracted
 
           go
           gopls
+          openapi-generator-cli
         ];
       };
     }

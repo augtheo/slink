@@ -1,7 +1,8 @@
 services:
   backend:
     environment:
-      - SLINK_URL=localhost:8060
+      - profile=dev
+      - BASE_URL=localhost:8060
   slink-web:
     build:
       target: dev

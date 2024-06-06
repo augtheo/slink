@@ -4,8 +4,11 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY *.go ./
+COPY handlers ./handlers
+COPY models ./models
 COPY repository ./repository
-COPY *.html ./
+COPY resources ./resources
+COPY service ./service
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /slink
 
