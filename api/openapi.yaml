@@ -1,0 +1,167 @@
+openapi: "3.0.0"
+info:
+  title: URL Shortening API
+  version: 1.0.0
+  description: An API for a URL shortening service.
+security:
+  - bearerAuth: []
+paths:
+  /urls:
+    post:
+      summary: Add a new URL and receive a shortened URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                expiry_date:
+                  type: string
+                  format: date-time
+                  example: "2024-06-09T07:55:30.358Z"
+                original_url:
+                  type: string
+                  format: uri
+                  example: "https://example.com"
+      responses:
+        "201":
+          description: URL successfully shortened
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShortenedUrlResponse"
+  /urls/{shortened_url}:
+    delete:
+      summary: Delete or disable a shortened URL
+      parameters:
+        - name: shortened_url
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: URL successfully deleted or disabled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+  /urls/{shortened_url}/stats:
+    get:
+      summary: View stats of the number of visits to the URL
+      parameters:
+        - name: shortened_url
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UrlStatsResponse"
+  /users/urls/stats:
+    get:
+      summary: View the stats for URLs created by a user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Top URLs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserStatsResponse"
+
+  /users/clicks/stats:
+    get:
+      summary: View the click stats for URLs created by a user
+      parameters:
+        - name: unique
+          in: query
+          required: true
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Top URLs retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserClickStatsResponse"
+components:
+  schemas:
+    ShortenedUrlResponse:
+      type: object
+      properties:
+        shortened_url:
+          type: string
+          example: "https://slnk.lol/abc123"
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "URL has been deleted/disabled"
+    UrlStatsResponse:
+      type: object
+      properties:
+        total_visits:
+          type: integer
+          example: 100
+        unique_visits:
+          type: integer
+          example: 80
+    UserClickStatsResponse:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 10
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Sunday"
+              count:
+                type: integer
+                example: 300
+    UserStatsResponse:
+      type: object
+      properties:
+        top_urls:
+          type: array
+          items:
+            type: object
+            properties:
+              url_id:
+                type: integer
+                example: 10
+              original_url:
+                type: string
+                example: "https://slnk.lol/xyz123"
+              shortened_url:
+                type: string
+                example: "https://slnk.lol/xyz123"
+              total_visits:
+                type: integer
+                example: 200
+              unique_visits:
+                type: integer
+                example: 200
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,20 +1,97 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
+import { ClerkProvider } from "@clerk/clerk-react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Link,
+  Navigate,
   Outlet,
   Route,
   RouterProvider,
+  useLocation,
 } from "react-router-dom";
 import NotFound from "./NotFound.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
+import { Button } from "./components/ui/button.tsx";
 import { Props } from "./lib/utils.ts";
+
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
+import Dashboard from "./Dashboard.tsx";
+import { GithubIcon } from "./assets/icons.tsx";
+
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key");
+}
+
+const ROUTES = {
+  HOME: "/app/home",
+  DASHBOARD: "/app/dashboard",
+};
+
+function NavToggle() {
+  let location = useLocation();
+  let isHome = location.pathname === ROUTES.HOME;
+
+  return (
+    <div>
+      <Link to={isHome ? ROUTES.DASHBOARD : ROUTES.HOME}>
+        <Button className="bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
+          {isHome ? "Go to Dashboard" : "Go to Home"}
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+function Header() {
+  return (
+    <header className="fixed top-0 z-10 w-full bg-gray-900 px-4 py-2 flex items-center justify-between">
+      <Link
+        className="text-gray-400 hover:text-gray-300 focus:ring-gray-500"
+        to="https://github.com/augtheo/slink"
+      >
+        <GithubIcon className="h-6 w-6" />
+      </Link>
+      <div className="flex items-center space-x-4">
+        <SignedOut>
+          <SignInButton>
+            <Button className="bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
+              Sign in
+            </Button>
+          </SignInButton>
+        </SignedOut>
+        <SignedIn>
+          <NavToggle />
+          <UserButton />
+        </SignedIn>
+      </div>
+    </header>
+  );
+}
+
+function Nav() {
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-900 ">
+      <Header />
+      <main className="flex flex-col top-14 flex-1">
+        <Outlet />
+      </main>
+      <Toaster />
+    </div>
+  );
+}
 
 function Root() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 px-4">
+    <div className="flex-1 flex items-center justify-center px-4 ">
       <div className="max-w-md w-full space-y-4">
         <div>
           <SlinkLogo className="block m-auto" />
@@ -24,7 +101,6 @@ function Root() {
           Shorten your URLs and share them with ease.
         </p>
       </div>
-      <Toaster />
     </div>
   );
 }
@@ -54,14 +130,24 @@ function SlinkLogo(props: Props) {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<Root />}>
-      <Route path="error" element={<NotFound />} />
-      <Route path="" element={<App />} />
-    </Route>,
+    <>
+      <Route path="/app" element={<Nav />}>
+        {/* TODO:  Redirect to auth if accessed dashboard without auth*/}
+        <Route path="/app/dashboard" element={<Dashboard />} />
+        <Route path="/app" element={<Root />}>
+          <Route path="/app/error" element={<NotFound />} />
+          <Route path="/app/home" element={<App />} />
+          <Route path="/app/" element={<Navigate to="/app/home" replace />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/app/home" replace />} />
+      </Route>
+    </>,
   ),
 );
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <RouterProvider router={router} />
+    </ClerkProvider>
   </React.StrictMode>,
 );

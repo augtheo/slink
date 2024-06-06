@@ -6,6 +6,21 @@ The compose file defines an application with a go service and a postgres db.
 
 # build
 
+Build client and server stubs with
+
+```bash
+openapi-generator-cli generate -i api/openapi.yaml -g typescript-axios -o slink-web/generated-src --additional-properties=supportsES6=true,typescriptThreePlus=true
+openapi-generator-cli generate -i api/openapi.yaml -g go-echo-server -o slink/ --additional-properties=packageName=slink --global-property models
+```
+
+Set the following environment variables within `slink-web/.env.development`:
+
+    - `VITE_APP_API_URL`
+
+    - `VITE_CLERK_PUBLISHABLE_KEY`
+
+Set the public key used to verify the signed JWT in `slink/resource/clerk_dev.pem`
+
 ```bash
 docker compose -f docker-compose.yml -f docker-compose-dev.yml build
 ```
@@ -29,7 +44,9 @@ docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d
 
 - [ ] Use base 58 encoded URLs
 - [ ] Remove expired urls from cache
+- [ ] Allow shortened URLs to be deactivated
+- [ ] Add authentication and personalised services.
 
 ## hmm
 
-- [ ] Add authentication and personalised services.
+- [ ] Roll my own auth

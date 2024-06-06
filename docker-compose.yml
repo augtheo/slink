@@ -9,8 +9,9 @@ services:
     ports:
       - 8060:8060
     environment:
-      - SLINK_URL=slink.augtheo.com
+      - BASE_URL=slink.augtheo.com
       - SERVER_PORT=8060
+      - profile=prd
       - DB_HOST=db
       - DB_PORT=5432
       - DB_NAME=${DB_NAME}

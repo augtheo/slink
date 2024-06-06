@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"container/list"
@@ -11,9 +11,14 @@ type LRUCache struct {
 	list     *list.List
 }
 
+type Node struct {
+	urlId       int
+	expandedUrl string
+}
+
 type pair struct {
 	key string
-	val string
+	val Node
 }
 
 func CreateLRUCache(capacity int) *LRUCache {
@@ -27,15 +32,16 @@ func CreateLRUCache(capacity int) *LRUCache {
 	}
 }
 
-func (l *LRUCache) Get(key string) (string, error) {
+func (l *LRUCache) Get(key string) (Node, error) {
 	if elem, found := l.cache[key]; found {
 		l.list.MoveToFront(elem)
 		return elem.Value.(pair).val, nil
 	}
-	return "", errors.New("Key does not exist")
+	var zero Node
+	return zero, errors.New("Key does not exist")
 }
 
-func (l *LRUCache) Put(key string, val string) {
+func (l *LRUCache) Put(key string, val Node) {
 	if elem, found := l.cache[key]; found {
 		l.list.Remove(elem)
 	}
