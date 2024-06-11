@@ -12,10 +12,8 @@ RUN bash /usr/local/bin/docker-entrypoint.sh generate \
 
 FROM golang:1.21 AS build-stage
 WORKDIR /app
-COPY --from=gen /workspace/generated /app/models
-
 COPY slink ./
-
+COPY --from=gen /workspace/generated ./
 RUN CGO_ENABLED=0 GOOS=linux go build -o /slink
 
 
