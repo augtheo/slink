@@ -12,8 +12,8 @@ import {
   CardContent,
   Card,
 } from "@/components/ui/card";
-import { ResponsiveLine } from "@nivo/line";
-import { ResponsiveBar } from "@nivo/bar";
+import { ResponsiveLine, Serie } from "@nivo/line";
+import { BarDatum, ResponsiveBar } from "@nivo/bar";
 import {
   TableHead,
   TableRow,
@@ -23,23 +23,23 @@ import {
   Table,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
-import { UserStatsResponseTopUrlsInner } from "./generated";
+import {
+  UserClickStatsResponse,
+  UserClickStatsResponseDataInner,
+  UserStatsResponseTopUrlsInner,
+} from "./generated";
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "./components/ui/use-toast";
 import { CalendarDaysIcon, LinkIcon, PieChartIcon } from "./assets/icons";
 
-const ROUTES = {
-  ANALYTICS: "/",
-  URLS: "/urls",
-};
-
 // Define the enum for date filters
-const DateFilters = Object.freeze({
+type DateFilter = "LAST_7" | "LAST_30" | "LAST_90" | "LAST_365";
+const DateFilters: { [key in DateFilter]: key } = {
   LAST_7: "LAST_7",
   LAST_30: "LAST_30",
   LAST_90: "LAST_90",
   LAST_365: "LAST_365",
-});
+};
 
 // Create a mapping from the enum values to the display text
 const filterTextMapping = {
@@ -50,9 +50,10 @@ const filterTextMapping = {
 };
 
 export default function Dashboard() {
-  const [selectedFilter, setSelectedFilter] = useState(DateFilters.LAST_7);
+  const [selectedFilter, setSelectedFilter] = useState<DateFilter>(
+    DateFilters.LAST_7,
+  );
 
-  const { getToken } = useAuth();
   return (
     <div className="min-h-screen flex flex-1">
       <div
@@ -101,7 +102,7 @@ export default function Dashboard() {
                   {Object.entries(filterTextMapping).map(([key, label]) => (
                     <DropdownMenuItem
                       key={key}
-                      onClick={() => setSelectedFilter(key)}
+                      onClick={() => setSelectedFilter(key as DateFilter)}
                     >
                       {label}
                     </DropdownMenuItem>
@@ -123,7 +124,9 @@ export default function Dashboard() {
 
 function TopUrls() {
   const { getToken } = useAuth();
-  const [urlStats, setUrlStats] = useState([]);
+  const [urlStats, setUrlStats] = useState(
+    Array<UserStatsResponseTopUrlsInner>,
+  );
   async function getUserUrlStats() {
     const token = await getToken();
     const headers: { Authorization?: string; "Content-Type": string } = {
@@ -154,7 +157,7 @@ function TopUrls() {
   useEffect(() => {
     getUserUrlStats();
   }, []);
-  function TopUrl({ url }) {
+  function TopUrl({ url }: { url: UserStatsResponseTopUrlsInner }) {
     return (
       <TableRow>
         <TableCell className="font-medium">
@@ -197,7 +200,8 @@ function TopUrls() {
 function TotalVisits() {
   const { getToken } = useAuth();
   //TODO: Use React's lazy loading to fetch here
-  const [clickStats, setClickStats] = useState({ count: 10, data: [] });
+  const [clickStatsCount, setClickStatsCount] = useState(0);
+  const [clickStatsData, setClickStatsData] = useState<Serie[]>();
   async function getUserUrlClickStats() {
     const token = await getToken();
     const headers: { Authorization?: string; "Content-Type": string } = {
@@ -217,20 +221,16 @@ function TotalVisits() {
     )
       .then((response) => response.json())
       .then((data) => {
-        // TODO: Refactor this horror
-        const tmpClickStats = {
-          count: data.count,
-          data: [
-            {
-              id: "TotalVisits",
-              data: data.data.map((obj) => ({
-                x: obj.name,
-                y: obj.count,
-              })),
-            },
-          ],
-        };
-        setClickStats(tmpClickStats);
+        setClickStatsCount(data.count);
+        setClickStatsData([
+          {
+            id: "TotalVisits",
+            data: data.data.map((obj: UserClickStatsResponseDataInner) => ({
+              x: obj.name,
+              y: obj.count,
+            })),
+          },
+        ]);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -249,54 +249,62 @@ function TotalVisits() {
       <CardHeader>
         <CardTitle>Total Clicks</CardTitle>
         <CardDescription>
-          <span className="text-4xl font-bold">{clickStats.count}</span>
+          {clickStatsCount ? (
+            <span className="text-4xl font-bold">{clickStatsCount}</span>
+          ) : (
+            <span className="text-4xl font-bold">Loading...</span>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="aspect-[9/4]">
-          <ResponsiveLine
-            data={clickStats.data}
-            margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
-            xScale={{
-              type: "point",
-            }}
-            yScale={{
-              type: "linear",
-            }}
-            axisTop={null}
-            axisRight={null}
-            axisBottom={{
-              tickSize: 0,
-              tickPadding: 16,
-            }}
-            axisLeft={{
-              tickSize: 0,
-              tickValues: 5,
-              tickPadding: 16,
-            }}
-            colors={["#2563eb", "#e11d48"]}
-            pointSize={6}
-            useMesh={true}
-            gridYValues={6}
-            theme={{
-              tooltip: {
-                chip: {
-                  borderRadius: "9999px",
+          {clickStatsData ? (
+            <ResponsiveLine
+              data={clickStatsData}
+              margin={{ top: 10, right: 10, bottom: 40, left: 40 }}
+              xScale={{
+                type: "point",
+              }}
+              yScale={{
+                type: "linear",
+              }}
+              axisTop={null}
+              axisRight={null}
+              axisBottom={{
+                tickSize: 0,
+                tickPadding: 16,
+              }}
+              axisLeft={{
+                tickSize: 0,
+                tickValues: 5,
+                tickPadding: 16,
+              }}
+              colors={["#2563eb", "#e11d48"]}
+              pointSize={6}
+              useMesh={true}
+              gridYValues={6}
+              theme={{
+                tooltip: {
+                  chip: {
+                    borderRadius: "9999px",
+                  },
+                  container: {
+                    fontSize: "12px",
+                    textTransform: "capitalize",
+                    borderRadius: "6px",
+                  },
                 },
-                container: {
-                  fontSize: "12px",
-                  textTransform: "capitalize",
-                  borderRadius: "6px",
+                grid: {
+                  line: {
+                    stroke: "#f3f4f6",
+                  },
                 },
-              },
-              grid: {
-                line: {
-                  stroke: "#f3f4f6",
-                },
-              },
-            }}
-            role="application"
-          />
+              }}
+              role="application"
+            />
+          ) : (
+            <p>Loading chart data...</p>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -306,7 +314,7 @@ function TotalVisits() {
 function UniqueVisits() {
   const { getToken } = useAuth();
   //TODO: Use React's lazy loading to fetch here
-  const [clickStats, setClickStats] = useState({ count: 10, data: [] });
+  const [clickStats, setClickStats] = useState<UserClickStatsResponse>();
   async function getUserUrlClickStats() {
     const token = await getToken();
     const headers: { Authorization?: string; "Content-Type": string } = {
@@ -345,50 +353,58 @@ function UniqueVisits() {
       <CardHeader>
         <CardTitle>Unique Visitors</CardTitle>
         <CardDescription>
-          <span className="text-4xl font-bold">{clickStats.count}</span>
+          {clickStats ? (
+            <span className="text-4xl font-bold">{clickStats.count}</span>
+          ) : (
+            <span className="text-4xl font-bold">Loading...</span>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="aspect-[9/4]">
-          <ResponsiveBar
-            data={clickStats.data}
-            keys={["count"]}
-            indexBy="name"
-            margin={{ top: 0, right: 0, bottom: 40, left: 40 }}
-            padding={0.3}
-            colors={["#2563eb"]}
-            axisBottom={{
-              tickSize: 0,
-              tickPadding: 16,
-            }}
-            axisLeft={{
-              tickSize: 0,
-              tickValues: 4,
-              tickPadding: 16,
-            }}
-            gridYValues={4}
-            theme={{
-              tooltip: {
-                chip: {
-                  borderRadius: "9999px",
+          {clickStats && clickStats.data ? (
+            <ResponsiveBar
+              data={clickStats.data as BarDatum[]}
+              keys={["count"]}
+              indexBy="name"
+              margin={{ top: 0, right: 0, bottom: 40, left: 40 }}
+              padding={0.3}
+              colors={["#2563eb"]}
+              axisBottom={{
+                tickSize: 0,
+                tickPadding: 16,
+              }}
+              axisLeft={{
+                tickSize: 0,
+                tickValues: 4,
+                tickPadding: 16,
+              }}
+              gridYValues={4}
+              theme={{
+                tooltip: {
+                  chip: {
+                    borderRadius: "9999px",
+                  },
+                  container: {
+                    fontSize: "12px",
+                    textTransform: "capitalize",
+                    borderRadius: "6px",
+                  },
                 },
-                container: {
-                  fontSize: "12px",
-                  textTransform: "capitalize",
-                  borderRadius: "6px",
+                grid: {
+                  line: {
+                    stroke: "#f3f4f6",
+                  },
                 },
-              },
-              grid: {
-                line: {
-                  stroke: "#f3f4f6",
-                },
-              },
-            }}
-            tooltipLabel={({ id }) => `${id}`}
-            enableLabel={false}
-            role="application"
-            ariaLabel="A bar chart showing data"
-          />
+              }}
+              tooltipLabel={({ id }) => `${id}`}
+              enableLabel={false}
+              role="application"
+              ariaLabel="A bar chart showing data"
+            />
+          ) : (
+            <p>Loading chart data...</p>
+          )}
         </div>
       </CardContent>
     </Card>

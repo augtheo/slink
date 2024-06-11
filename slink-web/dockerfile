@@ -1,3 +1,13 @@
+FROM openapitools/openapi-generator-cli as gen
+WORKDIR /workspace
+COPY api/openapi.yaml ./api/openapi.yaml
+
+RUN bash /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g typescript-axios \
+    -o generated \
+    --additional-properties=supportsES6=true,typescriptThreePlus=true
+
 FROM node:alpine as dev
 WORKDIR /app
 
@@ -5,7 +15,7 @@ COPY slink-web/package.json /app/package.json
 COPY slink-web/package-lock.json /app/package-lock.json
 RUN npm install
 COPY slink-web/ /app/
-
+COPY --from=gen /workspace/generated /app/src/generated
 EXPOSE 3000
 
 ENTRYPOINT [ "npm", "run" , "dev" ]
