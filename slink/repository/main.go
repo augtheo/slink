@@ -124,8 +124,9 @@ func GetLastWeekUniqueVisitCountStats(userId string) int {
 }
 
 func GetLastWeekUniqueVisitStats(userId string) ([]models.UserClickStatsResponseDataInner, error) {
-	query :=
-		`SELECT 
+
+  query :=
+  `SELECT 
     TO_CHAR(V.visit_timestamp, 'DD/MM') AS name,
     COUNT(DISTINCT V.visitor_ip) AS count
   FROM 
@@ -167,8 +168,8 @@ func GetLastWeekUniqueVisitStats(userId string) ([]models.UserClickStatsResponse
 
 func GetLastWeekTotalVisitCountStats(userId string) int {
 
-	query :=
-		`SELECT COUNT(V.visitor_ip)
+  query :=
+  `SELECT COUNT(V.visitor_ip)
   FROM 
       visits V
   JOIN 
@@ -188,8 +189,9 @@ func GetLastWeekTotalVisitCountStats(userId string) int {
 }
 
 func GetLastWeekTotalVisitStats(userId string) ([]models.UserClickStatsResponseDataInner, error) {
-	query :=
-		`SELECT 
+
+  query :=
+  `SELECT 
     TO_CHAR(V.visit_timestamp, 'DD/MM') AS name,
     COUNT(V.visitor_ip) AS count
   FROM 
