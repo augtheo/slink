@@ -1,14 +1,20 @@
+FROM openapitools/openapi-generator-cli as gen
+WORKDIR /workspace
+COPY api/openapi.yaml ./api/openapi.yaml
+RUN bash /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g go-echo-server \
+    -o generated/ \
+    --additional-properties=packageName=slink \
+    --global-property models
+
+
+
 FROM golang:1.21 AS build-stage
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
+COPY --from=gen /workspace/generated /app/models
 
-COPY *.go ./
-COPY handlers ./handlers
-COPY models ./models
-COPY repository ./repository
-COPY resources ./resources
-COPY service ./service
+COPY slink ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /slink
 
