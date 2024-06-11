@@ -1,4 +1,4 @@
-export function LinkIcon(props) {
+export function LinkIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -18,7 +18,7 @@ export function LinkIcon(props) {
   );
 }
 
-export function PieChartIcon(props) {
+export function PieChartIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -38,7 +38,7 @@ export function PieChartIcon(props) {
   );
 }
 
-export function CalendarDaysIcon(props) {
+export function CalendarDaysIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -66,7 +66,7 @@ export function CalendarDaysIcon(props) {
   );
 }
 
-export function SettingsIcon(props) {
+export function SettingsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -86,7 +86,7 @@ export function SettingsIcon(props) {
   );
 }
 
-export function CopyIcon(props) {
+export function CopyIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -106,7 +106,7 @@ export function CopyIcon(props) {
   );
 }
 
-export function GithubIcon(props) {
+export function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
