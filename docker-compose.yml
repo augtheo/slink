@@ -9,7 +9,7 @@ services:
     ports:
       - 8060:8060
     environment:
-      - BASE_URL=slink.augtheo.com
+      - BASE_URL=https://slnk.lol
       - SERVER_PORT=8060
       - profile=prd
       - DB_HOST=db
@@ -36,6 +36,9 @@ services:
     build:
       context: ./
       dockerfile: slink-web/dockerfile
+      args:
+        - VITE_APP_API_URL=https://slnk.lol
+        - VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
     volumes:
       - /project/node_modules
     ports:
