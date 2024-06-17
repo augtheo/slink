@@ -2,9 +2,11 @@ services:
   backend:
     environment:
       - profile=dev
-      - BASE_URL=localhost:8060
+      - BASE_URL=http://localhost:8060
   slink-web:
     build:
       target: dev
+      args:
+        - VITE_APP_API_URL=http://localhost:8060
     volumes:
       - ./slink-web/src:/app/src
