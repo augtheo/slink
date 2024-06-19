@@ -60,6 +60,13 @@ export default function App() {
     }
 
     const token = await getToken();
+    if (token == null) {
+      toast({
+        variant: "destructive",
+        title: "You need to sign in",
+      });
+      return;
+    }
     const headers: { Authorization?: string; "Content-Type": string } = {
       "Content-Type": "application/json",
     };
