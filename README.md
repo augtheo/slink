@@ -46,7 +46,8 @@ docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d
 - [ ] Remove expired urls from cache
 - [ ] Allow shortened URLs to be deactivated
 - [ ] Add authentication and personalised services.
+- [ ] Reduce reduplication of queries for stats apis and add other time intervals
 
-## hmm
+## maybe
 
 - [ ] Roll my own auth
