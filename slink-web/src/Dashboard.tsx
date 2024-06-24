@@ -30,7 +30,7 @@ import {
 } from "./generated";
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "./components/ui/use-toast";
-import { CalendarDaysIcon, LinkIcon, PieChartIcon } from "./assets/icons";
+import { CalendarDaysIcon } from "./assets/icons";
 
 // Define the enum for date filters
 type DateFilter = "LAST_7" | "LAST_30" | "LAST_90" | "LAST_365";
@@ -56,38 +56,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen flex flex-1">
-      <div
-        id="default-sidebar"
-        className="md:fixed left-0 top-14 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
-        aria-label="Sidebar"
-      >
-        <div className="h-full px-3 py-4  overflow-y-auto bg-gray-800 text-white">
-          <ul className="space-y-2 font-medium">
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 rounded-lg text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <PieChartIcon className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-                <span className="ms-3 group-hover:text-gray-900">
-                  Analytics
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <LinkIcon className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
-
-                <span className="ms-3 group-hover:text-gray-900">URLs</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className="flex-1 ml-64 mt-14 space-y-6 ">
+      <div className="mt-14 space-y-6 ">
         <div className="bg-gray-900 shadow-md pt-3 pb-6  px-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -111,7 +80,7 @@ export default function Dashboard() {
               </DropdownMenu>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <TotalVisits />
             <UniqueVisits />
           </div>
