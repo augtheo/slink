@@ -1,6 +1,6 @@
 # slink
 
-An url shortening application. Uses a simple md5 hash and persists using a postgres db.
+A url shortening application. Uses a simple md5 hash and persists using a postgres db.
 
 The compose file defines an application with a go service and a postgres db.
 
@@ -47,6 +47,7 @@ docker compose -f docker-compose.yml -f docker-compose-dev.yml up -d
 - [ ] Allow shortened URLs to be deactivated
 - [ ] Add authentication and personalised services.
 - [ ] Reduce reduplication of queries for stats apis and add other time intervals
+- [ ] Make docker compose remember previous volumes
 
 ## maybe
 
