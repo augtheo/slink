@@ -31,6 +31,7 @@ import {
 import { useAuth } from "@clerk/clerk-react";
 import { toast } from "./components/ui/use-toast";
 import { CalendarDaysIcon } from "./assets/icons";
+import { useNavigate } from "react-router-dom";
 
 // Define the enum for date filters
 type DateFilter = "LAST_7" | "LAST_30" | "LAST_90" | "LAST_365";
@@ -50,44 +51,59 @@ const filterTextMapping = {
 };
 
 export default function Dashboard() {
+  const { userId, isLoaded } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoaded && !userId) {
+      toast({
+        variant: "destructive",
+        title: "You need to sign in",
+      });
+      navigate("/app/home");
+    }
+  }, [isLoaded]);
+
   const [selectedFilter, setSelectedFilter] = useState<DateFilter>(
     DateFilters.LAST_7,
   );
 
   return (
-    <div className="min-h-screen flex flex-1">
-      <div className="mt-14 space-y-6 ">
-        <div className="bg-gray-900 shadow-md pt-3 pb-6  px-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
-                    <CalendarDaysIcon className="h-5 w-5" />
-                    <span>{filterTextMapping[selectedFilter]}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-auto p-0">
-                  {Object.entries(filterTextMapping).map(([key, label]) => (
-                    <DropdownMenuItem
-                      key={key}
-                      onClick={() => setSelectedFilter(key as DateFilter)}
-                    >
-                      {label}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+    isLoaded &&
+    userId && (
+      <div className="min-h-screen flex flex-1">
+        <div className="mt-14 space-y-6 ">
+          <div className="bg-gray-900 shadow-md pt-3 pb-6  px-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="bg-gray-600 hover:bg-gray-500 text-gray-50 focus:ring-2 focus:ring-gray-500 flex items-center space-x-2">
+                      <CalendarDaysIcon className="h-5 w-5" />
+                      <span>{filterTextMapping[selectedFilter]}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-auto p-0">
+                    {Object.entries(filterTextMapping).map(([key, label]) => (
+                      <DropdownMenuItem
+                        key={key}
+                        onClick={() => setSelectedFilter(key as DateFilter)}
+                      >
+                        {label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <TotalVisits />
+              <UniqueVisits />
+            </div>
+            <TopUrls />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <TotalVisits />
-            <UniqueVisits />
-          </div>
-          <TopUrls />
         </div>
       </div>
-    </div>
+    )
   );
 }
 
